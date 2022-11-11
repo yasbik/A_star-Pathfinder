@@ -3,13 +3,13 @@ import math
 from queue import PriorityQueue
 
 # set up the display
-WIDTH = 800
+WIDTH = 500
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("A* Path Finding Algorithm")
 
 # colour palette for GUI
 RED = (255, 0, 0)
-GREEN = (0, 255, 255)
+GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 WHITE = (255, 255, 255)
@@ -62,11 +62,11 @@ class Spot:
     
     # function to make spot closed
     def make_closed(self):
-        self.color = GREEN
+        self.color = RED
     
     # function to make spot open
     def make_open(self):
-        self.color = BLACK
+        self.color = GREEN
     
     # function to make spot a barrier
     def make_barrier(self):
@@ -148,6 +148,7 @@ def algorithm(draw, grid, start, end):
         open_set_hash.remove(current)
 
         if current == end:
+            reconstruct_path(came_from, end, draw)
             return True
         
         for neighbor in current.neighbors:
@@ -242,10 +243,6 @@ def main(win, width):
             # stop running the game if x is pressed
             if event.type == pygame.QUIT:
                 run = False
-            
-            # if the alrogithm has started, all other acitions are ignored
-            if started:
-                continue
 
             # if the left mouse button was pressed
             if pygame.mouse.get_pressed()[0]:
@@ -290,13 +287,18 @@ def main(win, width):
             # if a key has been pressed
             if event.type == pygame.KEYDOWN:
                 # if the spacebar was pressed and algorithm has not started yet
-                if event.key == pygame.K_SPACE and not started:
+                if event.key == pygame.K_SPACE and start and end:
                     # update all neighbours of all the spots
                     for row in grid:
                         for spot in row:
                             spot.update_neighbors(grid)
                     
                     algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end)
+                
+                if event.key == pygame.K_c:
+                    start = None
+                    end = None
+                    grid = make_grid(ROWS, width)
 
     
     pygame.quit()
