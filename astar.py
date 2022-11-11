@@ -58,7 +58,7 @@ class Spot:
     
     # function to reset the spots
     def reset(self):
-        self.color == WHITE
+        self.color = WHITE
     
     # function to make spot closed
     def make_closed(self):
@@ -90,7 +90,24 @@ class Spot:
     
     # function to update the neighbors of the spot
     def update_neighbors(self, grid):
-        pass
+        self.neighbors = []
+
+        # add bottom neighbour
+        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].is_barrier():
+            self.neighbors.append(grid[self.row + 1][self.col])
+        
+        # add top neighbour
+        if self.row > 0 and not grid[self.row - 1][self.col].is_barrier():
+            self.neighbors.append(grid[self.row - 1][self.col])
+        
+        # add right neighbour
+        if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].is_barrier():
+            self.neighbors.append(grid[self.row][self.col + 1])
+        
+        # add left neighbour
+        if self.col > 0 and not grid[self.row][self.col - 1].is_barrier():
+            self.neighbors.append(grid[self.row][self.col - 1])
+        
 
     def __lt__(self, other):
         return False
@@ -184,13 +201,13 @@ def main(win, width):
                 spot = grid[row][col]
 
                 # if click did not set start position
-                if not start:
+                if not start and spot != end:
                     # set start position
                     start = spot
                     start.make_start()
                 
                 # if click did not set end position
-                elif not end:
+                elif not end and spot != start:
                     # set end position
                     end = spot
                     end.make_end()
@@ -202,7 +219,32 @@ def main(win, width):
 
             # if the right mouse button was pressed
             elif pygame.mouse.get_pressed()[2]:
-                pass
+                pos = pygame.mouse.get_pos()
+                row, col = get_clicked_pos(pos, ROWS, width)
+
+                # erase whatever is clicked
+                spot = grid[row][col]
+                spot.reset()
+
+                # erase the start position
+                if spot == start:
+                    start = None
+                
+                # erase the end position
+                elif spot == end:
+                    end = None
+            
+            # if a key has been pressed
+            if event.type == pygame.KEYDOWN:
+                # if the spacebar was pressed and algorithm has not started yet
+                if event.key == pygame.K_SPACE and not started:
+                    # update all neighbours of all the spots
+                    for row in grid:
+                        for spot in row:
+                            spot.update_neighbors()
+                    
+                    algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end)
+
     
     pygame.quit()
 
