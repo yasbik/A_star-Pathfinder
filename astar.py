@@ -4,7 +4,7 @@ from queue import PriorityQueue
 
 # set up the display
 WIDTH = 800
-WIN = pygame.display.set_mode((WIDTH,WIDTH))
+WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("A* Path Finding Algorithm")
 
 # colour palette for GUI
@@ -72,6 +72,10 @@ class Spot:
     def make_barrier(self):
         self.color = BLACK
     
+    # function to make the spot end
+    def make_start(self):
+        self.color = ORANGE
+    
     # function to make spot the end
     def make_end(self):
         self.color = TURQUOISE
@@ -103,7 +107,7 @@ def make_grid(rows, width):
     gap = width // rows
 
     for i in range(rows):
-        grid.apend([])
+        grid.append([])
 
         for j in range(rows):
             spot = Spot(i, j, gap, rows)
@@ -114,13 +118,13 @@ def make_grid(rows, width):
 
 # function to draw the grid lines
 def draw_grid(win, rows, width):
-    GAP = width // rows
+    gap = width // rows
 
     for i in range(rows):
         pygame.draw.line(win, GREY, (0, i * gap), (width, i * gap))
 
         for j in range(rows):
-            pygame.draw.line(win, GREY, (0, j * gap), (width, j * gap))
+            pygame.draw.line(win, GREY, (j * gap, 0), (j * gap, width))
 
 
 # function to redraw everything
@@ -144,6 +148,65 @@ def get_clicked_pos(pos, rows, width):
     col = x // gap
 
     return row, col
+
+
+# main function
+def main(win, width):
+    # make the grid
+    ROWS = 50
+    grid = make_grid(ROWS, width)
+
+    # define the start and end position
+    start = None
+    end = None
+
+    run = True
+    started = False
+
+    while run:
+        # draw everything
+        draw(win, grid, ROWS, width)
+
+        # loop through all the events and check what they are
+        for event in pygame.event.get():
+            # stop running the game if x is pressed
+            if event.type == pygame.QUIT:
+                run = False
+            
+            # if the alrogithm has started, all other acitions are ignored
+            if started:
+                continue
+
+            # if the left mouse button was pressed
+            if pygame.mouse.get_pressed()[0]:
+                pos = pygame.mouse.get_pos()
+                row, col = get_clicked_pos(pos, ROWS, width)
+                spot = grid[row][col]
+
+                # if click did not set start position
+                if not start:
+                    # set start position
+                    start = spot
+                    start.make_start()
+                
+                # if click did not set end position
+                elif not end:
+                    # set end position
+                    end = spot
+                    end.make_end()
+
+                # if click did not set start of end position
+                elif spot != end and spot != end:
+                    # create a barrier
+                    spot.make_barrier()         
+
+            # if the right mouse button was pressed
+            elif pygame.mouse.get_pressed()[2]:
+                pass
+    
+    pygame.quit()
+
+main(WIN, WIDTH)
 
 
 
