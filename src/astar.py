@@ -1,5 +1,5 @@
 import pygame
-import cell
+import cell as cell
 
 # set up the display
 WIDTH = 500
