@@ -2,16 +2,16 @@ from queue import PriorityQueue
 import pygame
 
 # colour palette for GUI
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
+RED = (160, 160, 245)
+GREEN = (113, 113, 227)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
-WHITE = (255, 255, 255)
+WHITE = (211, 211, 245)
 BLACK = (0, 0, 0)
-PURPLE = (128, 0, 128)
-ORANGE = (255, 165, 0)
+PURPLE = (222, 113, 40)
+ORANGE = (155, 15, 186)
 GREY = (128, 128, 128)
-TURQUOISE = (64, 224, 208)
+TURQUOISE = (227, 25, 18)
 
 
 class Spot:
