@@ -1,4 +1,4 @@
-# Pathfinder
+# About the Project
 
 This is a program to find the shortest path between two points. It implements the A* pathfinding algorightm and uses visualizer tools in Python to conceptualize how the pathfinding algorithm works.
 
